@@ -3,6 +3,7 @@ import { Button, Form } from 'react-bootstrap';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../../firebase.init';
+import SocialLogin from '../SocialLogin/SocialLogin';
 import './Login.css'
 const Login = () => {
     const emailRef = useRef('');
@@ -10,7 +11,7 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     let from = location.state?.from?.pathname || "/";
-    
+    let errorElement;
     const [
       signInWithEmailAndPassword,
       user,
@@ -22,7 +23,9 @@ const Login = () => {
     if(user){
       navigate(from, { replace: true });
     }
-
+    if (error) {
+      errorElement =  <p className="text-danger">Error: {error?.message}</p>   
+    }
 
     const handleSubmit = event =>{
         event.preventDefault();
@@ -43,23 +46,19 @@ const Login = () => {
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control ref={emailRef} type="email" placeholder="Enter email" required/>
-          <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
-          </Form.Text>
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control ref={passwordRef} type="password" placeholder="Password" required/>
         </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-          <Form.Check type="checkbox" label="Check me out" />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
+        <Button variant="primary w-50 mx-auto d-block mb-2" type="login">
+          Login
         </Button>
       </Form>
+      {errorElement}
       <p>New to Car Services? <span className='register text-danger' onClick={navigateRegister}>Please Register</span></p>
+      <SocialLogin></SocialLogin>
     </div>
   );
 };
